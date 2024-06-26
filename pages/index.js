@@ -8,6 +8,8 @@ export default function HomePage() {
   const [atm, setATM] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
   const [input, setInput] = useState(0);
+  const [recAddress, setRecAddress] = useState('');
+  const [recAmount, setRecAmount] = useState(0);
 
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const atmABI = atm_abi.abi;
@@ -69,6 +71,16 @@ export default function HomePage() {
     }
   }
 
+  const transfer = async() => {
+    if (atm) {
+      let tx = await atm.transfer(recAddress, recAmount);
+      await tx.wait();
+      setRecAddress('');
+      setRecAmount(0);
+      getBalance();
+    }
+  }
+
   const withdraw = async() => {
     if (atm) {
       let tx = await atm.withdraw(input);
@@ -108,6 +120,17 @@ export default function HomePage() {
         <div style={{margin: 'auto', display: "flex", gap: '1rem'}}>
         <button onClick={deposit} style={{paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '.5rem', paddingBottom: '.5rem', color: 'white', fontStyle: 'italic', borderRadius: '1rem', backgroundColor: 'black'}}>Deposit GO</button>
         <button onClick={withdraw} style={{paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '.5rem', paddingBottom: '.5rem', color: 'white', fontStyle: 'italic', borderRadius: '1rem', backgroundColor: 'black'}}>Withdraw GO</button>
+        </div>
+        <div style={{marginTop: '2rem', paddingTop: '1rem', borderTop: '2px solid black', display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+          <input type="text" style={{paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '.5rem', paddingBottom: '.5rem'}} placeholder="Reciever Address..." value={recAddress} onChange={(event) => {
+            event.preventDefault();
+            setRecAddress(event.target.value)
+          }} />
+          <input type="number" style={{paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '.5rem', paddingBottom: '.5rem'}} placeholder="Reciever Address..." value={recAmount} onChange={(event) => {
+            event.preventDefault();
+            setRecAmount(event.target.value)
+          }} />
+          <button onClick={transfer} style={{paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '.5rem', paddingBottom: '.5rem', color: 'white', fontStyle: 'italic', borderRadius: '1rem', backgroundColor: 'black'}}>Transfer GO</button>
         </div>
       </div>
     )
